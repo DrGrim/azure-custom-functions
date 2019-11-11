@@ -88,8 +88,8 @@ $( document ).ready(function() {
 			/*==========================Get Time Difference===============*/
 			date_past = new Date(parseInt(TargetValue[1]));
 
-		    //console.log(date.toString());
-			duration(date);
+		        //console.log(date.toString());
+			duration(StampedFullDate);
 
 		}
 
