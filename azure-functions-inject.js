@@ -50,10 +50,3 @@ function StartTracking(){
 
                   $('#timer').html(Hours+' hour(s) : '+Minutes+' minute(s) : '+Seconds+' second(s)');  
 }
-
-$(window).on('beforeunload', function() {
-     if(TrackerStatus == "Active"){
-     
-	 return "Time tracking in effect ! If you decide to move from this page time tracking will be stopped . If you don't want to stop time tracking for this item please open your new url in a new window !";
-     }
-});
