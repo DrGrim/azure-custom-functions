@@ -76,14 +76,50 @@ $( document ).ready(function() {
 
 		if(document.cookie.indexOf(itemid+"=") >= 0){
                  
+			/*==========================Cookie===========================*/
+			//read cookie string
 			var Cookie = document.cookie.split(';');
+			//get the value
 			var TargetValue = Cookie[1].split('=');
-		        console.log(TargetValue[1]);
+			//convert miliseconds to an actual date
+			var StampedFullDate = new Date( parseInt(TargetValue[1])).getTime();
+			var date = new Date(StampedFullDate);
+			console.log(StampedFullDate);
+			/*==========================Get Time Difference===============*/
+			date_past = new Date(parseInt(TargetValue[1]));
+
+		    //console.log(date.toString());
+			duration(date);
 
 		}
 
 	}
 	
+    //this function is not complete 	
+    function duration(startDate) {
+
+
+        var d = new Date();
+        // get total seconds between the times
+        var delta = Math.abs(startDate - d) / 1000;
+
+        // calculate (and subtract) whole days
+        var days = Math.floor(delta / 86400);
+        delta -= days * 86400;
+
+        // calculate (and subtract) whole hours
+        var hr = Math.floor(delta / 3600) % 24;
+        delta -= hours * 3600;
+
+        // calculate (and subtract) whole minutes
+        var min = Math.floor(delta / 60) % 60;
+        delta -= minutes * 60;
+
+        // what's left is seconds
+        var sec = delta % 60;  // in theory the modulus is not required
+
+         alert(hr+ ":"+min+":"+sec);
+    }
 });
 
 
