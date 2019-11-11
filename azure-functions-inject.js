@@ -109,16 +109,16 @@ $( document ).ready(function() {
 
         // calculate (and subtract) whole hours
         var hr = Math.floor(delta / 3600) % 24;
-        delta -= hours * 3600;
+        delta -= hr * 3600;
 
         // calculate (and subtract) whole minutes
         var min = Math.floor(delta / 60) % 60;
-        delta -= minutes * 60;
+        delta -= min * 60;
 
         // what's left is seconds
         var sec = delta % 60;  // in theory the modulus is not required
 
-         alert(hr+ ":"+min+":"+sec);
+         console.log(hr+ ":"+min+":"+sec.toFixed(0));
     }
 });
 
