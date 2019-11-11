@@ -2,7 +2,6 @@ var Hours   = 0 ;
 var Minutes = 0 ;
 var Seconds = 0 ;
 var Tracker ;
-var TrackerStatus = "Inactive";
 
 $('input[aria-label="Time Spent"]').parent().append("<div id=\"trackbtn\" style=\"color:#fff;background-color:green;position: absolute;top: 0px;right: 0px;padding: 3px 5px 3px 5px;text-align: center;font-weight: bold;cursor:pointer;\"> START </div>").click(function(){
 
@@ -11,7 +10,7 @@ $('input[aria-label="Time Spent"]').parent().append("<div id=\"trackbtn\" style=
                 $('input[aria-label="Time Spent"]').parent().append("<div id=\"timer\" style=\"color:green;font-weight:bold;position:absolute;top: 0px;right: 50px;\"> 0 hour(s) : 0 minute(s) : 0 second(s) </div>");
                 $('#trackbtn').html("STOP").css('background-color','red');
 		Tracker = setInterval(StartTracking, 1000);
-		TrackerStatus = "Active";
+
 
         }else{
 
@@ -21,7 +20,6 @@ $('input[aria-label="Time Spent"]').parent().append("<div id=\"trackbtn\" style=
                 Minutes = 0;
                 Seconds = 0;
                 $('#timer').remove();
-		TrackerStatus = "Inactive";
                 
         }
 
@@ -49,4 +47,15 @@ function StartTracking(){
                   }
 
                   $('#timer').html(Hours+' hour(s) : '+Minutes+' minute(s) : '+Seconds+' second(s)');  
+}
+
+function setCookie(itemid) {
+  
+  var d = new Date();
+  var WhenDidItStart = d.getTime();
+  d.setTime(d.getTime() + (3600 * 1000 * 24 * 365 * 10));
+  var expires = "expires="+ d.toUTCString();
+	
+  document.cookie = itemid + "=" + WhenDidItStart + ";" + expires + ";path=/";
+	
 }
