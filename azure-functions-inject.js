@@ -9,14 +9,18 @@ $( document ).ready(function() {
                        
 			if(StartDate == null){
 		       
-		          setCookie($('span[aria-label="ID Field"]').html());
-			       
+                    setCookie($('span[aria-label="ID Field"]').html());
+                    $('.work-item-form-title > div > div > input').val($('.work-item-form-title > div > div > input').val() + " ("+ $('#mectrl_currentAccount_primary').html()  +" WIP)").change();
+                    setTimeout(function(){ $('.bowtie-save').parent().click();     }, 1000);
+				
 		       }
-			Start();
+			   Start();
 
 		}else{
 			
 			deleteCookie($('span[aria-label="ID Field"]').html());
+			$('.work-item-form-title > div > div > input').val(function(i, v) {return v.replace(" ("+ $('#mectrl_currentAccount_primary').html()  +" WIP)","");}).change();
+			setTimeout(function(){ $('.bowtie-save').parent().click();     }, 1000);
 			Stop();
 
 		}
@@ -53,6 +57,7 @@ function Stop(){
  function deleteCookie(itemid) {
 
 	   document.cookie = itemid + "=" + StartDate + "; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+	   StartDate = null;
 
  }
 
