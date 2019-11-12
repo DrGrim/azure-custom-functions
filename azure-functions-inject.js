@@ -37,6 +37,7 @@ $( document ).ready(function() {
 	     	if (key === 13 && $('#speshalnote').val().length == 0) {
 
 			//post comment here with just the time spent
+			SubmitNote("");
 			$('#optionalNote').remove();
 
 	        }
