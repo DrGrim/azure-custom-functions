@@ -1,5 +1,6 @@
 var Tracker ;
 var StartDate ;
+var TSpent = "";
 
 $( document ).ready(function() {
 
@@ -14,7 +15,7 @@ $( document ).ready(function() {
 
 		      setCookie($('span[aria-label="ID Field"]').html());
 		      $('.work-item-form-title > div > div > input').val($('.work-item-form-title > div > div > input').val() + " ("+ $('#mectrl_currentAccount_primary').html()  +" WIP)").change();
-		      setTimeout(function(){ $('.bowtie-save').parent().click();     }, 1000);
+		      setTimeout(function(){ $('.bowtie-save').parent().click(); }, 1000);
 
 		}
 		Start();
@@ -23,7 +24,7 @@ $( document ).ready(function() {
 
 		      deleteCookie($('span[aria-label="ID Field"]').html());
 		      $('.work-item-form-title > div > div > input').val(function(i, v) {return v.replace(" ("+ $('#mectrl_currentAccount_primary').html()  +" WIP)","");}).change();
-		      setTimeout(function(){ $('.bowtie-save').parent().click(); setTimeout(function(){ $('#speshalnote').focus(); }, 1000);  }, 1000);
+		      setTimeout(function(){ OptionalNote(); }, 1000);
 		      Stop();
 
 	    }
@@ -41,9 +42,27 @@ $( document ).ready(function() {
 	        }
 
 	});
+	
+	$('body').on('click', '#submitNote', function(){
 
+	      //post comment here with just the time spent
+	      SubmitNote($('#speshalnote').val());
+	      $('#optionalNote').remove();
+
+	});
+        
+	function SubmitNote(note){
+	   
+	      $('div[aria-label="Discussion"]').append('<div>'+note+'</div>').append('<div id="timepsenthistory" style="background-color: azure;width:100%;text-align: right;font-weight:bold;">Time spent : '+TSpent+'</div>').change();
+	      setTimeout(function(){  $('.bowtie-save').parent().click();   setTimeout(function(){  location.reload(); }, 500); }, 400);
+	      TSpent = "";
+	     
+	
+	}
+	
 	function Start(){
 
+		TSpent = "";
 		$('input[aria-label="Time Spent"]').parent().append("<div id=\"timer\" style=\"font-size:11px;color:green;font-weight:bold;position:absolute;top: 3px;right: 50px;\"> 0 hour(s) : 0 minute(s) : 0 second(s) </div>");
 		$('#trackbtn').html("STOP").css('background-color','red');
 		Tracker = setInterval(duration, 1000);
@@ -53,9 +72,10 @@ $( document ).ready(function() {
 	function Stop(){
 
 		 $('#trackbtn').html("START").css('background-color','green');
+		 TSpent = $('#timer').html();
 		 $('#timer').remove();
 		 clearInterval(Tracker);
-		 OptionalNote();
+		
 
 	}
 	
@@ -63,6 +83,7 @@ $( document ).ready(function() {
 
 		$('body').append(' <div id="optionalNote" style="position:fixed;top:200px;left:45%;background-color:#fff;box-shadow: 0px 0px 5px black;width:auto;height:auto;padding: 10px;"><div style="pointer-events: none;text-align:center;">Any notes to add ?</div><div style="margin-top:10px;"><textarea id="speshalnote" style="margin: 0px; width: 429px; height: 149px;"></textarea><br><button value="Submit Note" id="submitNote" style="float: right;border: none;background-color: #0077d4;color: #fff;padding: 5px;font-size: 12px;cursor:pointer;">Submit Note</button></div>  </div>  ');
 		setDraggable('#optionalNote');
+		setTimeout(function(){ $('#speshalnote').focus(); }, 1000);
 
 	}
 
