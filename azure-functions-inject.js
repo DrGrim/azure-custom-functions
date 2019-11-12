@@ -1,6 +1,7 @@
 var Tracker ;
 var StartDate ;
 var TSpent = "";
+var StartClicked = false;
 
 $( document ).ready(function() {
 
@@ -8,27 +9,31 @@ $( document ).ready(function() {
 	$('input[aria-label="Time Spent"]').parent().append("<div id=\"trackbtn\" style=\"color:#fff;background-color:green;position: absolute;top: 0px;right: 0px;padding: 3px 5px 3px 5px;text-align: center;font-weight: bold;cursor:pointer;\"> START </div>");
 
 	$('#trackbtn').click(function(){ 
-		
-	    if($('#trackbtn').html().indexOf('START') > -1  ){
+	 
+		 if(StartClicked == false){
+			 
+			    StartClicked = true;
+			    if($('#trackbtn').html().indexOf('START') > -1  ){
 
-		 if(StartDate == null){
+				 if(StartDate == null){
 
-		      setCookie($('span[aria-label="ID Field"]').html());
-		      $('.work-item-form-title > div > div > input').val($('.work-item-form-title > div > div > input').val() + " ("+ $('#mectrl_currentAccount_primary').html()  +" WIP)").change();
-		      setTimeout(function(){ $('.bowtie-save').parent().click(); }, 1000);
+				      setCookie($('span[aria-label="ID Field"]').html());
+				      $('.work-item-form-title > div > div > input').val($('.work-item-form-title > div > div > input').val() + " ("+ $('#mectrl_currentAccount_primary').html()  +" WIP)").change();
+				      setTimeout(function(){ $('.bowtie-save').parent().click(); }, 1000);
 
-		}
-		Start();
+				}
+				Start();
 
-	    }else{
+			    }else{
 
-		      deleteCookie($('span[aria-label="ID Field"]').html());
-		      $('.work-item-form-title > div > div > input').val(function(i, v) {return v.replace(" ("+ $('#mectrl_currentAccount_primary').html()  +" WIP)","");}).change();
-		      setTimeout(function(){ OptionalNote(); }, 1000);
-		      Stop();
+				      deleteCookie($('span[aria-label="ID Field"]').html());
+				      $('.work-item-form-title > div > div > input').val(function(i, v) {return v.replace(" ("+ $('#mectrl_currentAccount_primary').html()  +" WIP)","");}).change();
+				      setTimeout(function(){ OptionalNote(); }, 1000);
+				      Stop();
 
-	    }
-
+			    }
+		  }
+		 setTimeout(function(){ StartClicked = false; }, 4000);
 	});
 
 	$('body').on('keypress', '#speshalnote', function(){
@@ -94,14 +99,14 @@ $( document ).ready(function() {
 		StartDate = d.getTime();
 		d.setTime(d.getTime() + (3600 * 1000 * 24 * 365 * 10));
 		var expires = "expires="+ d.toUTCString();
-
-		document.cookie = itemid + "=" + StartDate + ";" + expires + ";path=/";
+ 
+		document.cookie = itemid + "=" + StartDate + ">" + $('input[aria-label="Time Spent"]').val().replace(" hour(s) ","").replace(" minute(s) ","").replace(" second(s) ","") + ";" + expires + ";path=/";
 
 	}
 
 	function deleteCookie(itemid) {
 
-		document.cookie = itemid + "=" + StartDate + "; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+		document.cookie = itemid + "=" + StartDate + ">" + $('input[aria-label="Time Spent"]').val().replace(" hour(s) ","").replace(" minute(s) ","").replace(" second(s) ","") + "; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 		StartDate = null;
 
 	}
@@ -112,6 +117,7 @@ $( document ).ready(function() {
 
 		/*==========================Cookie===========================*/
 		//read cookie string
+		console.log( document.cookie );
 		var Cookie = document.cookie.split(';');
 		//get the value
 		var TargetValue = Cookie[1].split('=');
