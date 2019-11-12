@@ -46,7 +46,7 @@ $( document ).ready(function() {
 	$('body').on('click', '#submitNote', function(){
 
 	      //post comment here with just the time spent
-	      SubmitNote($('#speshalnote').val());
+	      SubmitNote($('#speshalnote').val().replace(/\n/g, '<br>\n').replace(/ /g, '\u00a0'));
 	      $('#optionalNote').remove();
 
 	});
