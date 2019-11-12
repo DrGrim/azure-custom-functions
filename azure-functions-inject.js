@@ -2,6 +2,7 @@ var Tracker ;
 var StartDate ;
 var TSpent = "";
 var StartClicked = false;
+var PreviousTimeSpanRecorded = "";
 
 $( document ).ready(function() {
 
@@ -60,9 +61,20 @@ $( document ).ready(function() {
 	function SubmitNote(note){
 	   
 	      $('div[aria-label="Discussion"]').append('<div>'+note+'</div>').append('<div id="timepsenthistory" style="font-weight:bold;width: fit-content;float: right;">Time spent : '+TSpent+'</div>').change();
-	      setTimeout(function(){  $('.bowtie-save').parent().click();   setTimeout(function(){  location.reload(); }, 500); }, 400);
-	      TSpent = "";
 	     
+		setTimeout(function(){  
+		     
+		      $('.bowtie-save').parent().click(); 
+		      convertToSeconds($('#timer').html().replace(" hour(s) ","").replace(" minute(s) ","").replace(" second(s) ",""), "Update");  
+		      setTimeout(function(){  
+			      $('#timer').remove();
+			      location.reload(); 
+		      }, 500); 
+		      
+	      }, 400);
+		
+	      TSpent = "";
+	      
 	
 	}
 	
@@ -79,7 +91,7 @@ $( document ).ready(function() {
 
 		 $('#trackbtn').html("START").css('background-color','green');
 		 TSpent = $('#timer').html();
-		 $('#timer').remove();
+		 
 		 clearInterval(Tracker);
 		
 
@@ -117,12 +129,14 @@ $( document ).ready(function() {
 
 		/*==========================Cookie===========================*/
 		//read cookie string
-		console.log( document.cookie );
-		var Cookie = document.cookie.split(';');
+		
+		var SplitOne = document.cookie.split(';');
 		//get the value
-		var TargetValue = Cookie[1].split('=');
+		var SplitTwo = SplitOne[1].split('=');
+		var SplitThree = SplitTwo[1].split('>');
+		convertToSeconds(SplitThree[1], "Store");
 		//convert miliseconds to an actual date
-		var StampedFullDate = new Date( parseInt(TargetValue[1])).getTime();
+		var StampedFullDate = new Date( parseInt(SplitThree[0])).getTime();
 		StartDate = new Date(StampedFullDate);
 
 		$('#trackbtn').click();
@@ -156,6 +170,28 @@ $( document ).ready(function() {
 
 		$('#timer').html(hr+' hour(s) : '+min+' minute(s) : '+sec.toFixed(0)+' second(s)');
         }
+	
+	function convertToSeconds(data, argument){
+	        
+		var hours = data.split(':')[0];
+		var minutes = data.split(':')[1];
+		var seconds = data.split(':')[2];
+		
+		if(argument == "Store"){
+			
+		   PreviousTimeSpanRecorded = parseInt(seconds) + parseInt(minutes * 60) + parseInt(hours * 3600);
+			
+		}
+		
+		if(argument == "Update"){
+		
+		   alert(parseInt(PreviousTimeSpanRecorded) + parseInt(seconds) + parseInt(minutes * 60) + parseInt(hours * 3600));
+			
+		}
+		
+		
+	}
+	
 	
        CheckForStartCookie($('span[aria-label="ID Field"]').html());
 
