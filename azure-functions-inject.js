@@ -3,14 +3,15 @@ var StartDate ;
 
 $( document ).ready(function() {
 
- CheckForStartCookie($('span[aria-label="ID Field"]').html());
-
-
  $('input[aria-label="Time Spent"]').parent().append("<div id=\"trackbtn\" style=\"color:#fff;background-color:green;position: absolute;top: 0px;right: 0px;padding: 3px 5px 3px 5px;text-align: center;font-weight: bold;cursor:pointer;\"> START </div>").click(function(){
-
-		if($('#trackbtn').html().indexOf('START') > -1){
-
-			setCookie($('span[aria-label="ID Field"]').html());
+  
+		if($('#trackbtn').html().indexOf('START') > -1  ){
+                       
+			if(StartDate == null){
+		       
+		          setCookie($('span[aria-label="ID Field"]').html());
+			       
+		       }
 			Start();
 
 		}else{
@@ -51,7 +52,7 @@ function Stop(){
 
  function deleteCookie(itemid) {
 
-	   document.cookie = "username="+itemid+"; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+	   document.cookie = itemid + "=" + StartDate + "; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
  }
 
@@ -66,11 +67,9 @@ function Stop(){
 			var TargetValue = Cookie[1].split('=');
 			//convert miliseconds to an actual date
 			var StampedFullDate = new Date( parseInt(TargetValue[1])).getTime();
-			var date = new Date(StampedFullDate);
+			StartDate = new Date(StampedFullDate);
 			
 			$('#trackbtn').click();
-		        //console.log(date.toString());
-			//duration(StampedFullDate);
 
 		}
 
@@ -82,7 +81,7 @@ function Stop(){
 
         var d = new Date();
         // get total seconds between the times
-        var delta = Math.abs(startDate - d) / 1000;
+        var delta = Math.abs(StartDate - d) / 1000;
 
         // calculate (and subtract) whole days
         var days = Math.floor(delta / 86400);
@@ -101,6 +100,8 @@ function Stop(){
 
 	$('#timer').html(hr+' hour(s) : '+min+' minute(s) : '+sec.toFixed(0)+' second(s)');
     }
+	
+    CheckForStartCookie($('span[aria-label="ID Field"]').html());
 });
 
 
