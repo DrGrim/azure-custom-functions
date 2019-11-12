@@ -54,7 +54,7 @@ $( document ).ready(function() {
         
 	function SubmitNote(note){
 	   
-	      $('div[aria-label="Discussion"]').append('<div>'+note+'</div>').append('<div id="timepsenthistory" style="background-color: azure;width:100%;text-align: right;font-weight:bold;">Time spent : '+TSpent+'</div>').change();
+	      $('div[aria-label="Discussion"]').append('<div>'+note+'</div>').append('<div id="timepsenthistory" style="font-weight:bold;width: fit-content;float: right;">Time spent : '+TSpent+'</div>').change();
 	      setTimeout(function(){  $('.bowtie-save').parent().click();   setTimeout(function(){  location.reload(); }, 500); }, 400);
 	      TSpent = "";
 	     
