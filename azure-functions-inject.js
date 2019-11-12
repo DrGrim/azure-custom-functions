@@ -21,7 +21,9 @@ $( document ).ready(function() {
 				      setCookie($('span[aria-label="ID Field"]').html());
 				      $('.work-item-form-title > div > div > input').val($('.work-item-form-title > div > div > input').val() + " ("+ $('#mectrl_currentAccount_primary').html()  +" WIP)").change();
 				      setTimeout(function(){ $('.bowtie-save').parent().click(); }, 1000);
-
+					 
+				      //THIS MIGHT NOT WORK
+				      convertToSeconds($('input[aria-label="Time Spent"]').val().replace(" hour(s) ","").replace(" minute(s) ","").replace(" second(s) ",""), "Store");
 				}
 				Start();
 
@@ -63,11 +65,10 @@ $( document ).ready(function() {
 	      $('div[aria-label="Discussion"]').append('<div>'+note+'</div>').append('<div id="timepsenthistory" style="font-weight:bold;width: fit-content;float: right;">Time spent : '+TSpent+'</div>').change();
 	     
 		setTimeout(function(){  
-		     
-		      $('.bowtie-save').parent().click(); 
 		      convertToSeconds($('#timer').html().replace(" hour(s) ","").replace(" minute(s) ","").replace(" second(s) ",""), "Update");  
+		      $('.bowtie-save').parent().click(); 
+		      
 		      setTimeout(function(){  
-			      $('#timer').remove();
 			      location.reload(); 
 		      }, 500); 
 		      
@@ -134,7 +135,7 @@ $( document ).ready(function() {
 		//get the value
 		var SplitTwo = SplitOne[1].split('=');
 		var SplitThree = SplitTwo[1].split('>');
-		convertToSeconds(SplitThree[1], "Store");
+		
 		//convert miliseconds to an actual date
 		var StampedFullDate = new Date( parseInt(SplitThree[0])).getTime();
 		StartDate = new Date(StampedFullDate);
@@ -171,6 +172,7 @@ $( document ).ready(function() {
 		$('#timer').html(hr+' hour(s) : '+min+' minute(s) : '+sec.toFixed(0)+' second(s)');
         }
 	
+	//THIS MIGHT NOT WORK
 	function convertToSeconds(data, argument){
 	        
 		var hours = data.split(':')[0];
