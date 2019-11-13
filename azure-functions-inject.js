@@ -6,47 +6,57 @@ var PreviousTimeSpanRecorded = "";
 
 $( document ).ready(function() {
 
-	$('input[aria-label="Time Spent"]').attr('disabled','disabled');
+	setInterval(function(){ 
+	
+	   if($('input[aria-label="Time Spent"]')[0].hasAttribute('readonly') == false){
+		   
+		   //$('input[aria-label="Time Spent"]').attr('readonly','readonly');
+	   }
+	
+	
+	}, 1000);
+	
+	
 	$('input[aria-label="Time Spent"]').parent().append("<div id=\"trackbtn\" style=\"color:#fff;background-color:green;position: absolute;top: 0px;right: 0px;padding: 3px 5px 3px 5px;text-align: center;font-weight: bold;cursor:pointer;\"> START </div>");
-
+    $('input[aria-label="Time Spent"]').attr('readonly','readonly');
+	
 	$('#trackbtn').click(function(){ 
 	 
 		 if(StartClicked == false){
 			 
-			    StartClicked = true;
-			    if($('#trackbtn').html().indexOf('START') > -1  ){
+			StartClicked = true;
+			if($('#trackbtn').html().indexOf('START') > -1  ){
 
 				 if(StartDate == null){
 
 				      setCookie($('span[aria-label="ID Field"]').html());
 				      $('.work-item-form-title > div > div > input').val($('.work-item-form-title > div > div > input').val() + " ("+ $('#mectrl_currentAccount_primary').html()  +" WIP)").change();
 				      setTimeout(function(){ $('.bowtie-save').parent().click(); }, 1000);
-					 
-				     
+					 		     
 				      convertToSeconds($('input[aria-label="Time Spent"]').val().replace(" hour(s) ","").replace(" minute(s) ","").replace(" second(s) ",""), "Store");
 				}
 				Start();
 
-			    }else{
+		    }else{
 
 				      deleteCookie($('span[aria-label="ID Field"]').html());
 				      $('.work-item-form-title > div > div > input').val(function(i, v) {return v.replace(" ("+ $('#mectrl_currentAccount_primary').html()  +" WIP)","");}).change();
-				      setTimeout(function(){ OptionalNote(); }, 1000);
+				      setTimeout(function(){ OptionalNote(); }, 600);
 				      Stop();
 
-			    }
-		  }
-		 setTimeout(function(){ StartClicked = false; }, 4000);
+			}
+		}
+		setTimeout(function(){ StartClicked = false; }, 4000);
 	});
 
 	$('body').on('keypress', '#speshalnote', function(){
 
 	     	var key = window.event.keyCode;
-	     	if (key === 13 && $('#speshalnote').val().length == 0) {
+	     	if (key === 13 && !window.event.shiftKey) {
 
-			//post comment here with just the time spent
-			SubmitNote("");
-			$('#optionalNote').remove();
+				//post comment here with just the time spent
+				SubmitNote($('#speshalnote').val().replace(/\n/g, '<br>\n').replace(/ /g, '\u00a0'));
+				$('#optionalNote').remove();
 
 	        }
 
@@ -59,10 +69,19 @@ $( document ).ready(function() {
 	      $('#optionalNote').remove();
 
 	});
-        
+     
+		
+	function OptionalNote(){
+
+		$('body').append(' <div id="optionalNote" style="position:fixed;top:200px;left:45%;background-color:#fff;box-shadow: 0px 0px 5px black;width:auto;height:auto;padding: 10px;"><div style="pointer-events: none;text-align:center;">Any notes to add ?<br> <span style="color:red;">for line breaks please use SHIFT + ENTER </span></div><div style="margin-top:10px;"><textarea id="speshalnote" style="margin: 0px; width: 429px; height: 149px;"></textarea><br><button value="Submit Note" id="submitNote" style="float: right;border: none;background-color: #0077d4;color: #fff;padding: 5px;font-size: 12px;cursor:pointer;">Submit Note</button></div>  </div>  ');
+		setDraggable('#optionalNote');
+		setTimeout(function(){ $('#speshalnote').focus(); }, 1000);
+
+	} 
+	 
 	function SubmitNote(note){
 	   
-	      $('div[aria-label="Discussion"]').append('<div id="noteholder">'+note+'</div>').append('<div id="timepsenthistory" style="font-weight:bold;width: fit-content;float: right;">Time spent : '+TSpent+'</div>').change();
+	      $('div[aria-label="Discussion"]').append('<div id="noteholder">'+note+'</div>').append('<div id="timepsenthistory" style="font-weight:bold;text-align:right;">Time spent : '+TSpent+'</div>').change();
 	     
 		setTimeout(function(){  
 		    
@@ -80,6 +99,7 @@ $( document ).ready(function() {
 		TSpent = "";
 		$('input[aria-label="Time Spent"]').parent().append("<div id=\"timer\" style=\"font-size:11px;color:green;font-weight:bold;position:absolute;top: 3px;right: 50px;\"> 0 hour(s) : 0 minute(s) : 0 second(s) </div>");
 		$('#trackbtn').html("STOP").css('background-color','red');
+		$('input[aria-label="Time Spent"]').attr('readonly','readonly');
 		Tracker = setInterval(duration, 1000);
 
 	}
@@ -93,14 +113,7 @@ $( document ).ready(function() {
 		
 
 	}
-	
-	function OptionalNote(){
 
-		$('body').append(' <div id="optionalNote" style="position:fixed;top:200px;left:45%;background-color:#fff;box-shadow: 0px 0px 5px black;width:auto;height:auto;padding: 10px;"><div style="pointer-events: none;text-align:center;">Any notes to add ?</div><div style="margin-top:10px;"><textarea id="speshalnote" style="margin: 0px; width: 429px; height: 149px;"></textarea><br><button value="Submit Note" id="submitNote" style="float: right;border: none;background-color: #0077d4;color: #fff;padding: 5px;font-size: 12px;cursor:pointer;">Submit Note</button></div>  </div>  ');
-		setDraggable('#optionalNote');
-		setTimeout(function(){ $('#speshalnote').focus(); }, 1000);
-
-	}
 
 	function setCookie(itemid) {
 
@@ -109,13 +122,13 @@ $( document ).ready(function() {
 		d.setTime(d.getTime() + (3600 * 1000 * 24 * 365 * 10));
 		var expires = "expires="+ d.toUTCString();
  
-		document.cookie = itemid + "=" + StartDate + ">" + $('input[aria-label="Time Spent"]').val().replace(" hour(s) ","").replace(" minute(s) ","").replace(" second(s) ","") + ";" + expires + ";path=/";
-		PreviousTimeSpanRecorded = $('input[aria-label="Time Spent"]').val().replace(" hour(s) ","").replace(" minute(s) ","").replace(" second(s) ","");
+		document.cookie = itemid + "=" + StartDate + ">" + $('input[aria-label="Time Spent"]').val().replace(" hour(s) ","").replace(" minute(s) ","").replace(" seconds(s)","") + ";" + expires + ";path=/";
+		convertToSeconds($('input[aria-label="Time Spent"]').val().replace(" hour(s) ","").replace(" minute(s) ","").replace(" seconds(s)",""), "Store");
 	}
 
 	function deleteCookie(itemid) {
 
-		document.cookie = itemid + "=" + StartDate + ">" + $('input[aria-label="Time Spent"]').val().replace(" hour(s) ","").replace(" minute(s) ","").replace(" second(s) ","") + "; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+		document.cookie = itemid + "=" + StartDate + ">" + $('input[aria-label="Time Spent"]').val().replace(" hour(s) ","").replace(" minute(s) ","").replace(" seconds(s)","") + "; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 		StartDate = null;
 
 	}
@@ -135,7 +148,7 @@ $( document ).ready(function() {
 		//convert milliseconds to an actual date
 		var StampedFullDate = new Date( parseInt(SplitThree[0])).getTime();
 		StartDate = new Date(StampedFullDate);
-        PreviousTimeSpanRecorded = SplitThree[1];
+        convertToSeconds(SplitThree[1],"Store");
 
 		$('#trackbtn').click();
 
@@ -200,6 +213,7 @@ $( document ).ready(function() {
 		var s = Math.floor(d % 3600 % 60);
 
 		$('input[aria-label="Time Spent"]').val(h + " hour(s) : " + m + " minute(s) : " + s + " seconds(s)").change();
+		$('input[aria-label="Time Spent"]').attr('readonly','readonly');
 		
 		setTimeout(function(){  
 		
