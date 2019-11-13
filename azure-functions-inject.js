@@ -22,7 +22,7 @@ $( document ).ready(function() {
 				      $('.work-item-form-title > div > div > input').val($('.work-item-form-title > div > div > input').val() + " ("+ $('#mectrl_currentAccount_primary').html()  +" WIP)").change();
 				      setTimeout(function(){ $('.bowtie-save').parent().click(); }, 1000);
 					 
-				      //THIS MIGHT NOT WORK
+				     
 				      convertToSeconds($('input[aria-label="Time Spent"]').val().replace(" hour(s) ","").replace(" minute(s) ","").replace(" second(s) ",""), "Store");
 				}
 				Start();
@@ -62,16 +62,12 @@ $( document ).ready(function() {
         
 	function SubmitNote(note){
 	   
-	      $('div[aria-label="Discussion"]').append('<div>'+note+'</div>').append('<div id="timepsenthistory" style="font-weight:bold;width: fit-content;float: right;">Time spent : '+TSpent+'</div>').change();
+	      $('div[aria-label="Discussion"]').append('<div id="noteholder">'+note+'</div>').append('<div id="timepsenthistory" style="font-weight:bold;width: fit-content;float: right;">Time spent : '+TSpent+'</div>').change();
 	     
 		setTimeout(function(){  
-		      convertToSeconds($('#timer').html().replace(" hour(s) ","").replace(" minute(s) ","").replace(" second(s) ",""), "Update");  
-		      $('.bowtie-save').parent().click(); 
-		      
-		      setTimeout(function(){  
-			      location.reload(); 
-		      }, 500); 
-		      
+		    
+    		  convertToSeconds($('#timer').html().replace(" hour(s) ","").replace(" minute(s) ","").replace(" second(s) ",""), "Update");   
+  
 	      }, 400);
 		
 	      TSpent = "";
@@ -114,7 +110,7 @@ $( document ).ready(function() {
 		var expires = "expires="+ d.toUTCString();
  
 		document.cookie = itemid + "=" + StartDate + ">" + $('input[aria-label="Time Spent"]').val().replace(" hour(s) ","").replace(" minute(s) ","").replace(" second(s) ","") + ";" + expires + ";path=/";
-
+		PreviousTimeSpanRecorded = $('input[aria-label="Time Spent"]').val().replace(" hour(s) ","").replace(" minute(s) ","").replace(" second(s) ","");
 	}
 
 	function deleteCookie(itemid) {
@@ -136,9 +132,10 @@ $( document ).ready(function() {
 		var SplitTwo = SplitOne[1].split('=');
 		var SplitThree = SplitTwo[1].split('>');
 		
-		//convert miliseconds to an actual date
+		//convert milliseconds to an actual date
 		var StampedFullDate = new Date( parseInt(SplitThree[0])).getTime();
 		StartDate = new Date(StampedFullDate);
+        PreviousTimeSpanRecorded = SplitThree[1];
 
 		$('#trackbtn').click();
 
@@ -187,17 +184,35 @@ $( document ).ready(function() {
 		
 		if(argument == "Update"){
 		
-		   alert(parseInt(PreviousTimeSpanRecorded) + parseInt(seconds) + parseInt(minutes * 60) + parseInt(hours * 3600));
-			
+		    //this feels embarrassing storing a var inside a var then redefining that var with the converted result of the same var THIS IS A PARADOX
+            var temp = parseInt(PreviousTimeSpanRecorded) + parseInt(seconds) + parseInt(minutes * 60) + parseInt(hours * 3600);
+			secondsToHms(temp)
+			PreviousTimeSpanRecorded = "";
 		}
 		
-		
+		$('#timer').remove();
 	}
 	
+	function secondsToHms(seconds) {
+		var d = Number(seconds);
+		var h = Math.floor(d / 3600);
+		var m = Math.floor(d % 3600 / 60);
+		var s = Math.floor(d % 3600 % 60);
+
+		$('input[aria-label="Time Spent"]').val(h + " hour(s) : " + m + " minute(s) : " + s + " seconds(s)").change();
+		
+		setTimeout(function(){  
+		
+			      $('.bowtie-save').parent().click();
+				  $('div[aria-label="Discussion"] > #noteholder , div[aria-label="Discussion"] > #timepsenthistory').remove();
+		}, 700); 
+
+		
+    }
 	
        CheckForStartCookie($('span[aria-label="ID Field"]').html());
 
-	
+
 //=============================================================FORM DRAG AND DROP
 var active = false;
 var currentX;
