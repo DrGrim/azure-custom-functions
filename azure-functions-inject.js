@@ -10,7 +10,7 @@ $( document ).ready(function() {
 	
 	   if($('input[aria-label="Time Spent"]')[0].hasAttribute('readonly') == false){
 		   
-		   //$('input[aria-label="Time Spent"]').attr('readonly','readonly');
+		   $('input[aria-label="Time Spent"]').attr('readonly','readonly');
 	   }
 	
 	
